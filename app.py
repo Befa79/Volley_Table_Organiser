@@ -1,14 +1,30 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
+import sqlite3
 
-app = Flask(__name__)
-
-@app.route("/")
-def menu():
-    return render_template("menu.html")
-
-@app.route("/create")
+@app.route("/create", methods=["GET", "POST"])
 def create_tournament():
-    return render_template("create.html")
+    if request.method == "POST":
+        name = request.form.get("tournament_name")
+        date = request.form.get("tournament_date")
+        teams = request.form.get("teams")
+        fields = request.form.get("fields")
+        start = request.form.get("start_time")
+        end = request.form.get("end_time")
+        t_type = request.form.get("tournament_type")
+        mode = request.form.get("game_mode")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+        connection = sqlite3.connect("tournaments.db")
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO tournaments 
+            (name, date, teams, fields, start_time, end_time, tournament_type, game_mode)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (name, date, teams, fields, start, end, t_type, mode))
+
+        connection.commit()
+        connection.close()
+
+        return redirect(url_for("tournament_saved"))
+
+    return render_template("create.html")
