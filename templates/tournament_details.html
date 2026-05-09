@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Tournament Details{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <h1 class="text-center mb-4">{{ t[1] }}</h1>
+
+    <div class="card p-4 shadow" style="border-radius: 12px;">
+        <p><strong>Date:</strong> {{ t[2] }}</p>
+        <p><strong>Number of Teams:</strong> {{ t[3] }}</p>
+        <p><strong>Fields Available:</strong> {{ t[4] }}</p>
+        <p><strong>Start Time:</strong> {{ t[5] }}</p>
+        <p><strong>End Time:</strong> {{ t[6] }}</p>
+        <p><strong>Tournament Type:</strong> {{ t[7] }}</p>
+        <p><strong>Game Mode:</strong> {{ t[8] }}</p>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/tournaments" class="btn btn-secondary">Back to Tournaments</a>
+    </div>
+</div>
+
+{% endblock %}

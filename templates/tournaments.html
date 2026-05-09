@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Tournaments{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Your Tournaments</h1>
+
+    <div class="row g-4">
+
+        {% for t in tournaments %}
+        <div class="col-md-4">
+            <a href="/tournament/{{ t[0] }}" style="text-decoration: none; color: inherit;">
+                <div class="card shadow-sm p-3 text-center" style="border-radius: 12px;">
+                    <h4 class="fw-bold">{{ t[1] }}</h4>
+                    <p class="text-muted mb-1">{{ t[2] }}</p>
+        
+                    <div class="countdown fw-bold" data-date="{{ t[2] }}">
+                        Loading countdown…
+                    </div>
+                </div>
+            </a>
+        
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<script>
+// Countdown script
+document.querySelectorAll('.countdown').forEach(el => {
+    const targetDate = new Date(el.dataset.date + "T00:00:00");
+
+    function updateCountdown() {
+        const now = new Date();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+            el.innerHTML = "Tournament started!";
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+        el.innerHTML = `${days}d ${hours}h ${minutes}m`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 60000); // update every minute
+});
+</script>
+
+{% endblock %}
