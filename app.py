@@ -3,20 +3,53 @@ import sqlite3
 
 app = Flask(__name__)
 
+def recommend_format(teams, fields, start_time, end_time):
+    # Convert times to minutes
+    def to_minutes(t):
+        h, m = map(int, t.split(":"))
+        return h * 60 + m
+
+    total_minutes = to_minutes(end_time) - to_minutes(start_time)
+
+    # Basic logic
+    if teams <= 4:
+        return "Round Robin (few teams, everyone can play each other)"
+
+    if teams <= 8 and fields >= 2:
+        return "Groups + Knockout (balanced for medium tournaments)"
+
+    if teams > 8 and fields >= 3:
+        return "Multiple Groups + Knockout (best for large tournaments)"
+
+    if total_minutes < 180:
+        return "Knockout (limited time available)"
+
+    return "Round Robin or Groups (flexible depending on match duration)"
+
+
 @app.route("/tournament/<int:tournament_id>")
 def tournament_details(tournament_id):
     connection = sqlite3.connect("tournaments.db")
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM tournaments WHERE id = ?", (tournament_id,))
-    tournament = cursor.fetchone()
+    t = cursor.fetchone()
 
     connection.close()
 
-    if tournament is None:
+    if t is None:
         return "Tournament not found"
 
-    return render_template("tournament_details.html", t=tournament)
+    # Extract fields
+    teams = int(t[3])
+    fields = int(t[4])
+    start = t[5]
+    end = t[6]
+
+    # Get recommendation
+    recommendation = recommend_format(teams, fields, start, end)
+
+    return render_template("tournament_details.html", t=t, recommendation=recommendation)
 
 @app.route("/")
 def menu():

@@ -16,9 +16,15 @@
         <p><strong>Tournament Type:</strong> {{ t[7] }}</p>
         <p><strong>Game Mode:</strong> {{ t[8] }}</p>
     </div>
+    <hr>
+
+    <h4 class="mt-3">Recommended Format</h4>
+    <p class="fw-bold text-primary">{{ recommendation }}</p>
 
     <div class="text-center mt-4">
-        <a href="/tournaments" class="btn btn-secondary">Back to Tournaments</a>
+        <a href="{{ url_for('tournaments_list') }}" class="btn btn-secondary">
+            Back to Tournaments
+        </a>
     </div>
 </div>
 
